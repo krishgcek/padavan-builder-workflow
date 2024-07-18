@@ -30,13 +30,18 @@ jobs:
 
     - name: Configure build
       run: |
-        cd padavan/trunk
-        ./build_firmware_modify TL-WR845N_V4
+        cd padavan/toolchain-mipsel
+        ./clean_sources.sh
+        ./build_toolchain.sh
+        cd ../trunk
+        ./clear_tree.sh
+        cp configs/templates/TL-WR845N.config .config
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
 
     - name: Build firmware
       run: |
         cd padavan/trunk
-        ./build_firmware
+        fakeroot ./build_firmware.sh
 
     - name: Upload firmware
       uses: actions/upload-artifact@v2
@@ -44,4 +49,3 @@ jobs:
         name: padavan-firmware
         path: |
           padavan/trunk/images/*.bin
-          
