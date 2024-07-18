@@ -19,7 +19,7 @@ jobs:
     - name: Set up environment
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl
+        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl git wget
 
     - name: Clone Padavan repository
       run: |
@@ -28,12 +28,15 @@ jobs:
         git checkout master
         git submodule update --init --recursive
 
-    - name: Configure build
+    - name: Set up toolchain
       run: |
-        cd padavan/toolchain-mipsel
+        cd padavan/toolchain
         ./clean_sources.sh
         ./build_toolchain.sh
-        cd ../trunk
+
+    - name: Configure build
+      run: |
+        cd padavan/trunk
         ./clear_tree.sh
         cp configs/templates/TL-WR845N.config .config
         echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
