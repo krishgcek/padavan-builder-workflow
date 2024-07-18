@@ -31,7 +31,6 @@ jobs:
     - name: Configure build
       run: |
         cd padavan/trunk
-        ./clear_tree
         cp configs/templates/config_base config_base
         echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> config_base
         ./build_firmware_modify TL-WR845N_V4
