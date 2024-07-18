@@ -1,0 +1,50 @@
+name: Build Padavan Firmware
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl
+
+    - name: Clone Padavan repository
+      run: |
+        git clone https://gitlab.com/dm38/padavan-ng.git padavan
+        cd padavan
+        git checkout master
+        git submodule update --init --recursive
+
+    - name: Configure build
+      run: |
+        cd padavan/trunk
+        ./clear_tree
+        cp configs/templates/config_base config_base
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> config_base
+        ./build_firmware_modify TL-WR845N_V4
+
+    - name: Build firmware
+      run: |
+        cd padavan/trunk
+        ./build_firmware
+
+    - name: Upload firmware
+      uses: actions/upload-artifact@v2
+      with:
+        name: padavan-firmware
+        path: |
+          padavan/trunk/images/*.bin
+          
