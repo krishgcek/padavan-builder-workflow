@@ -19,7 +19,12 @@ jobs:
     - name: Set up environment
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl git wget help2man libtool   # Added libtool installation
+        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl wget help2man libtool   # Install libtool
+
+    - name: Verify libtool installation
+      run: |
+        libtool --version
+        which libtool
 
     - name: Clone Padavan repository
       run: |
