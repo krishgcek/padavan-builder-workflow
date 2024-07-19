@@ -45,9 +45,9 @@ jobs:
         cd padavan/trunk
         ./clear_tree.sh
         ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
-        cp configs/templates/tplink/tl_wr845n-v4.config .config
+        cp configs/templates/tplink/tl_wr845n-v4.config .config || { echo "Failed to copy config file"; exit 1; }
         ls -l .config  # Verify .config file was copied
-        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config || { echo "Failed to append to .config"; exit 1; }
         cat .config  # Display contents of .config
 
     - name: Set up toolchain
