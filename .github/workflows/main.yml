@@ -48,13 +48,14 @@ jobs:
         cd padavan/trunk
         ls -R configs/templates/tplink
 
-    - name: Copy and verify configuration file
+    - name: Copy and modify configuration file
       run: |
         cd padavan/trunk
         ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
         cp configs/templates/tplink/tl_wr845n-v4.config .config || { echo "Failed to copy config file"; exit 1; }
         ls -l .config  # Verify .config file was copied
         echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config || { echo "Failed to append to .config"; exit 1; }
+        sed -i 's/^CONFIG_FIRMWARE_INCLUDE_LANG_RU/# CONFIG_FIRMWARE_INCLUDE_LANG_RU/' .config || { echo "Failed to comment out CONFIG_FIRMWARE_INCLUDE_LANG_RU"; exit 1; }
         cat .config  # Display contents of .config
 
     - name: Set up toolchain
