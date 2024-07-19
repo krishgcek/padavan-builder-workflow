@@ -44,7 +44,14 @@ jobs:
       run: |
         cd padavan/trunk
         ./clear_tree.sh
+        echo "Listing configuration files in configs/templates/tplink/"
+        ls -l configs/templates/tplink/  # List all config files
+        echo "Verifying existence of tl_wr845n-v4.config"
         ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
+        if [ ! -f configs/templates/tplink/tl_wr845n-v4.config ]; then
+          echo "Configuration file configs/templates/tplink/tl_wr845n-v4.config not found!"
+          exit 1
+        fi
         cp configs/templates/tplink/tl_wr845n-v4.config .config || { echo "Failed to copy config file"; exit 1; }
         ls -l .config  # Verify .config file was copied
         echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config || { echo "Failed to append to .config"; exit 1; }
