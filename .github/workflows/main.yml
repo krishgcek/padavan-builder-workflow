@@ -21,11 +21,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl wget help2man libtool-bin
 
-    - name: Verify libtool installation
-      run: |
-        libtool --version
-        which libtool
-
     - name: Clone Padavan repository
       run: |
         git clone https://gitlab.com/dm38/padavan-ng.git padavan
@@ -38,19 +33,20 @@ jobs:
         cd padavan/trunk
         ls -R configs/templates/tplink
 
+    - name: Verify and copy configuration file
+      run: |
+        cd padavan/trunk
+        ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
+        cp configs/templates/tplink/tl_wr845n-v4.config .config
+        ls -l .config  # Verify .config file was copied
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
+        cat .config  # Display contents of .config
+
     - name: Set up toolchain
       run: |
         cd padavan/toolchain
-
-    - name: Configure build
-      run: |
-        cd padavan/trunk
-        ./clear_tree.sh
-        ls -l configs/templates/tplink/tl_wr845n-v4.config  # Debug: Verify config file exists
-        cp configs/templates/tplink/tl_wr845n-v4.config .config
-        ls -l .config  # Debug: Verify .config file was copied
-        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
-        cat .config  # Debug: Display contents of .config
+        ./clean_sources.sh
+        ./build_toolchain.sh
 
     - name: Build firmware
       run: |
