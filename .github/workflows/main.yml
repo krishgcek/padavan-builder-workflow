@@ -40,32 +40,21 @@ jobs:
         cd padavan/trunk
         ls -R configs/templates/tplink
 
-    - name: Verify and copy configuration file
-      run: |
-        cd padavan/trunk
-        ./clear_tree.sh
-        ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
-        if [ -f configs/templates/tplink/tl_wr845n-v4.config ]; then
-          echo "Configuration file exists."
-        else
-          echo "Configuration file does not exist."
-          exit 1
-        fi
-        cp configs/templates/tplink/tl_wr845n-v4.config .config
-        if [ -f .config ]; then
-          echo "Config file copied successfully."
-        else
-          echo "Failed to copy config file."
-          exit 1
-        fi
-        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config
-        cat .config  # Display contents of .config
-
     - name: Set up toolchain
       run: |
         cd padavan/toolchain
         ./clean_sources.sh
         ./build_toolchain.sh
+
+    - name: Verify and copy configuration file
+      run: |
+        cd padavan/trunk
+        ./clear_tree.sh
+        ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
+        cp configs/templates/tplink/tl_wr845n-v4.config .config || { echo "Failed to copy config file"; exit 1; }
+        ls -l .config  # Verify .config file was copied
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config || { echo "Failed to append to .config"; exit 1; }
+        cat .config  # Display contents of .config
 
     - name: Build firmware
       run: |
