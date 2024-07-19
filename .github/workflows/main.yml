@@ -19,7 +19,14 @@ jobs:
     - name: Set up environment
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl wget help2man libtool-bin
+        sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl wget help2man libtool-bin automake autoconf
+
+    - name: Verify tool installation
+      run: |
+        libtool --version
+        which libtool
+        automake --version
+        aclocal --version
 
     - name: Clone Padavan repository
       run: |
@@ -36,10 +43,11 @@ jobs:
     - name: Verify and copy configuration file
       run: |
         cd padavan/trunk
+        ./clear_tree.sh
         ls -l configs/templates/tplink/tl_wr845n-v4.config  # Verify config file exists
         cp configs/templates/tplink/tl_wr845n-v4.config .config
         ls -l .config  # Verify .config file was copied
-        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config
         cat .config  # Display contents of .config
 
     - name: Set up toolchain
