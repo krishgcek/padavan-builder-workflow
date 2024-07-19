@@ -44,11 +44,13 @@ jobs:
 
     - name: Configure build
       run: |
-        ls
         cd padavan/trunk
         ./clear_tree.sh
+        ls -l configs/templates/tplink/tl_wr845n-v4.config  # Debug: Verify config file exists
         cp configs/templates/tplink/tl_wr845n-v4.config .config
+        ls -l .config  # Debug: Verify .config file was copied
         echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
+        cat .config  # Debug: Display contents of .config
 
     - name: Build firmware
       run: |
