@@ -21,12 +21,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential git-core libncurses5-dev unzip gawk zlib1g-dev libssl-dev gettext xsltproc libxml-parser-perl wget help2man libtool-bin
 
-        # Add libtool path to PATH
-        echo "export PATH=\$PATH:/usr/bin" >> $GITHUB_ENV
-
     - name: Verify libtool installation
       run: |
-        /usr/bin/libtool --version
+        libtool --version
         which libtool
 
     - name: Clone Padavan repository
@@ -36,18 +33,21 @@ jobs:
         git checkout master
         git submodule update --init --recursive
 
+    - name: List available configuration files
+      run: |
+        cd padavan/trunk
+        ls -R configs/templates/tplink
+
     - name: Set up toolchain
       run: |
         cd padavan/toolchain
-        ./clean_sources.sh
-        ./build_toolchain.sh
 
     - name: Configure build
       run: |
         cd padavan/trunk
         ./clear_tree.sh
         cp configs/templates/tplink/tl_wr845n-v4.config .config
-        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_UK=y' >> .config
+        echo 'CONFIG_FIRMWARE_INCLUDE_LANG_EN=y' >> .config
 
     - name: Build firmware
       run: |
